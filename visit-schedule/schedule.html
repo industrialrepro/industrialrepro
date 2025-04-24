@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <title>每日拜訪行程清單</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body class="bg-light">
+<div class="container py-3">
+  <h3 class="text-center mb-3">每日拜訪客戶清單</h3>
+  <div id="schedule"></div>
+</div>
+
+<script>
+  // 此處填入你的API網址
+  const apiURL = "https://sheet2api.com/v1/XeqEedOPStOM/%E5%BE%85%E6%8B%9C%E8%A8%AA%E5%AE%A2%E6%88%B6%E6%B8%85%E5%96%AE";
+
+  async function loadSchedule() {
+    const response = await fetch(apiURL);
+    const data = await response.json();
+
+    let tableHTML = `
+      <table class="table table-striped table-hover">
+        <thead class="table-dark">
+          <tr>
+            <th scope="col">公司名稱</th>
+            <th scope="col">客戶名稱</th>
+            <th scope="col">重要資訊</th>
+            <th scope="col">地址</th>
+          </tr>
+        </thead>
+        <tbody>
+    `;
+
+    data.forEach(item => {
+      if(item.地址){  // 只有地址有資料才顯示，避免空白列
+        const googleMapLink = encodeURI(`https://www.google.com/maps/search/?api=1&query=${item.地址}`);
+        tableHTML += `
+          <tr>
+            <td>${item.公司名稱 || '-'}</td>
+            <td>${item.客戶名稱 || '-'}</td>
+            <td>${item.重要資訊 || '-'}</td>
+            <td><a href="${googleMapLink}" target="_blank">${item.地址}</a></td>
+          </tr>
+        `;
+      }
+    });
+
+    tableHTML += "</tbody></table>";
+    document.getElementById('schedule').innerHTML = tableHTML;
+  }
+
+  loadSchedule();
+</script>
+
+</body>
+</html>
