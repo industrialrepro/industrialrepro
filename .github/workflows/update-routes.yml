@@ -29,11 +29,12 @@ jobs:
           git config --global user.name "github-actions"
           git config --global user.email "github-actions@github.com"
 
-      - name: 拉取遠端最新版本避免衝突
-        run: git pull --rebase origin main
-
-      - name: 上傳更新
+      - name: Commit 變更
         run: |
           git add Dou/routes.html
-          git commit -m "每日自動更新拜訪行程頁"
+          git commit -m "每日自動更新拜訪行程頁" || echo "Nothing to commit"
+
+      - name: 拉取遠端避免衝突後推送
+        run: |
+          git pull --rebase origin main
           git push
