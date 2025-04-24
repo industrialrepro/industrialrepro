@@ -2,18 +2,21 @@
 import requests
 import os
 from datetime import datetime
+from pytz import timezone
 
 # 建立資料夾
 os.makedirs("Dou", exist_ok=True)
 
 # 設定今天日期（台灣時間）
-today = datetime.utcnow().astimezone().strftime("%Y/%m/%d")
+tz = timezone('Asia/Taipei')
+now = datetime.now(tz)
+today = now.strftime("%Y/%m/%d")
 
 # 讀取 API
 res = requests.get("https://sheet2api.com/v1/XeqEedOPStOM/%25E5%25BE%2585%25E6%258B%259C%25E8%25A8%25AA%25E5%25AE%25A2%25E6%2588%25B6%25E6%25B8%2585%25E5%2596%25AE")
 data = res.json()
 
-# 防呆：確保每筆資料是 dict
+# 過濾符合條件資料（今天要拜訪 或 是否優先 = 是），完成日期為空
 rows = []
 for row in data:
     if not isinstance(row, dict):
@@ -37,11 +40,16 @@ html = '''
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
 body {font-family: sans-serif; background: #f9f9f9; color: #333;}
-.card {background: white; border-radius: 8px; margin: 1em; padding: 1em; box-shadow: 0 2px 4px rgba(0,0,0,0.1);}
-.card h3 {margin-top: 0;} a {color: #0066cc;}
+.card {background: white; border-radius: 8px; margin: 1em auto; padding: 1em; box-shadow: 0 2px 4px rgba(0,0,0,0.1); max-width: 500px;}
+.card h3 {margin-top: 0; color: #0066cc;}
+a {color: #0066cc;} h1 {text-align:center;}
+footer {text-align:center; padding:1em; color:#999;}
 </style></head><body>
-<h1 style="text-align:center;">今日拜訪行程</h1>
+<h1>今日拜訪行程</h1>
 '''
+
+if not groups:
+    html += "<p style='text-align:center; color: #666;'>今日尚無需拜訪客戶，請查看名單是否已更新。</p>"
 
 for idx, group in enumerate(groups, start=1):
     html += f'<h2>第{idx}組</h2>'
@@ -57,7 +65,7 @@ for idx, group in enumerate(groups, start=1):
         </div>
         '''
 
-html += f'<footer style="text-align:center; padding:1em; color:#999;">本頁面由睦聚工業地產自動產出，產生時間：2025-04-24 10:53:42</footer></body></html>'
+html += f'<footer>本頁面由睦聚工業地產自動產出，產生時間：{now.strftime("%Y-%m-%d %H:%M:%S")}</footer></body></html>'
 
 # 儲存
 with open("Dou/routes.html", "w", encoding="utf-8") as f:
