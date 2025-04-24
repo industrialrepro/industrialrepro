@@ -1,23 +1,34 @@
+
 import requests
+import os
+from datetime import datetime
 
-# 從 Sheet2API 讀取資料
-import json
+# 建立資料夾
+os.makedirs("Dou", exist_ok=True)
 
+# 設定今天日期（台灣時間）
+today = datetime.utcnow().astimezone().strftime("%Y/%m/%d")
+
+# 讀取 API
 res = requests.get("https://sheet2api.com/v1/XeqEedOPStOM/%25E5%25BE%2585%25E6%258B%259C%25E8%25A8%25AA%25E5%25AE%25A2%25E6%2588%25B6%25E6%25B8%2585%25E5%2596%25AE")
+data = res.json()
 
-# 印出 API 回傳內容
-print("API 回傳內容：")
-print(res.text)
-exit()
+# 過濾符合條件資料（今天要拜訪 或 是否優先 = 是），完成日期為空
+rows = []
+for row in data:
+    if row.get("完成日期"):
+        continue
+    if row.get("指定拜訪日") == today or row.get("是否優先") == "是":
+        rows.append(row)
 
+# 分級排序順序：A > B > C > D > 其他
+grade_order = {"A": 1, "B": 2, "C": 3, "D": 4}
+rows.sort(key=lambda x: grade_order.get(x.get("分級", "").strip().upper(), 99))
 
-rows = [row for row in data if not row.get("完成日期")]
-
-# 排序並分組
-rows = sorted(rows, key=lambda x: x.get("分級", "Z"))
+# 分組（每組3人，每日最多2組）
 groups = [rows[i:i+3] for i in range(0, min(len(rows), 6), 3)]
 
-# 開始產出 HTML
+# HTML 產出
 html = '''
 <!DOCTYPE html><html lang="zh-Hant"><head><meta charset="UTF-8">
 <title>睦聚工業地產 - 今日拜訪行程</title>
@@ -44,6 +55,6 @@ for idx, group in enumerate(groups, start=1):
 
 html += '<footer style="text-align:center; padding:1em; color:#999;">本頁面由睦聚工業地產自動產出</footer></body></html>'
 
-# 儲存到 Dou/routes.html
+# 儲存
 with open("Dou/routes.html", "w", encoding="utf-8") as f:
     f.write(html)
