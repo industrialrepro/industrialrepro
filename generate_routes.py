@@ -4,12 +4,12 @@ import requests
 import json
 
 res = requests.get("https://sheet2api.com/v1/XeqEedOPStOM/%25E5%25BE%2585%25E6%258B%259C%25E8%25A8%25AA%25E5%25AE%25A2%25E6%2588%25B6%25E6%25B8%2585%25E5%2596%25AE")
-try:
-    data = res.json()
-except json.JSONDecodeError:
-    print("⚠️ 錯誤：回傳不是 JSON，請檢查 API 連結或 Sheet 權限。")
-    print(res.text)
-    exit(1)
+
+# 印出 API 回傳內容
+print("API 回傳內容：")
+print(res.text)
+exit()
+
 
 rows = [row for row in data if not row.get("完成日期")]
 
