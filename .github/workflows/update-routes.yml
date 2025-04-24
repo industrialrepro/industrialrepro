@@ -9,32 +9,26 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
-      - name: 下載原始碼
-        uses: actions/checkout@v3
+    - name: 下載原始碼
+      uses: actions/checkout@v3
 
-      - name: 安裝 Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
+    - name: 安裝 Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
 
-      - name: 安裝 requests 套件
-        run: pip install requests pytz
+    - name: 安裝 requests 套件
+      run: pip install requests pytz
 
-      - name: 執行產生行程頁
-        run: python generate_routes.py
+    - name: 執行產生行程頁
+      run: python generate_routes.py
 
-      - name: 設定 Git 使用者
-        run: |
-          git config --global user.name "github-actions"
-          git config --global user.email "github-actions@github.com"
-
-      - name: Commit 變更
-        run: |
-          git add Dou/routes.html
-          git commit -m "每日自動更新拜訪行程頁" || echo "Nothing to commit"
-
-      - name: 拉取遠端避免衝突後推送
-        run: |
-          git pull --rebase origin main
-          git push
+    - name: 上傳更新
+      run: |
+        git config --global user.name "github-actions"
+        git config --global user.email "github-actions@github.com"
+        git add .
+        git commit -m "每日自動更新拜訪行程頁"
+        git push --force
