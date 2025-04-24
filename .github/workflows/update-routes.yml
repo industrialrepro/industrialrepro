@@ -23,7 +23,7 @@ jobs:
         run: |
           git config --global user.name "github-actions"
           git config --global user.email "github-actions@github.com"
-          git pull --rebase origin main || true
+          git pull origin main --rebase || true
           git add routes.html
           git commit -m "每日自動更新拜訪行程頁" || echo "No changes to commit"
-          git push
+          git push origin main || echo "Push failed"
