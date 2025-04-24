@@ -13,10 +13,7 @@ pending = [row for row in data if not row.get("完成日期")]
 
 # 分級排序 + 是否優先
 grade_order = {"A": 1, "B": 2, "C": 3, "D": 4, "E": 5, "F": 6}
-pending.sort(key=lambda row: (
-    grade_order.get(row.get("分級", "Z"), 99),
-    0 if row.get("是否優先") == "是" else 1
-))
+pending.sort(key=lambda row: grade_order.get(row.get("分級", "Z"), 99))
 
 # 每日拜訪數量
 num_per_day = 3
