@@ -32,7 +32,7 @@ def generate_html(entries):
     html = [
         "<html><head><meta charset='utf-8'><meta name='viewport' content='width=device-width, initial-scale=1'>",
         f"<title>{date_str} 拜訪行程</title>",
-        '''
+        """
         <style>
             body { font-family: 'Microsoft JhengHei', sans-serif; padding: 24px; line-height: 1.8; background-color: #f9f9f9; color: #333; }
             h2 { color: #2c3e50; }
@@ -41,7 +41,7 @@ def generate_html(entries):
             a { color: #3498db; text-decoration: none; }
         </style>
         </head><body>
-        ''',
+        """,
         f"<h2>{date_str} 拜訪行程</h2>"
     ]
 
@@ -66,8 +66,7 @@ def generate_html(entries):
 
     html.append(f"<div class='footer'>本頁面由睦聚工業地產自動產出，產生時間：{time_str}（台灣時間）</div>")
     html.append("</body></html>")
-    return "
-".join(html)
+    return "\n".join(html)
 
 # 主程式
 if __name__ == "__main__":
