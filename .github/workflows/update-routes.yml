@@ -2,8 +2,8 @@ name: 每日更新拜訪行程
 
 on:
   schedule:
-    - cron: '0 22 * * *'  # 每日台灣時間上午 6 點（UTC+8 = UTC-8）
-    - cron: '0 5 * * *'   # 每日台灣時間下午 1 點（UTC+8 = UTC-8）
+    - cron: '0 22 * * *'  # 台灣時間上午 6 點（UTC 22:00 前一天）
+    - cron: '0 5 * * *'   # 台灣時間下午 1 點（UTC 05:00）
   workflow_dispatch:     # 允許手動執行
 
 jobs:
@@ -31,4 +31,4 @@ jobs:
           git add routes.html
           git commit -m "每日自動更新拜訪行程"
           git push
-        continue-on-error: true  # 若無變更，跳過錯誤
+        continue-on-error: true
