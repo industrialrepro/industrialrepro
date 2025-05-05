@@ -20,7 +20,7 @@ def filter_and_sort(data):
         if row.get("分級") in GRADE_ORDER and row.get("地址")
     ]
     sorted_entries = sorted(valid_entries, key=lambda x: GRADE_ORDER[x["分級"]])
-    return sorted_entries[:10]
+    return sorted_entries[:6]
 
 # 產生 HTML 內容
 def generate_html(entries):
